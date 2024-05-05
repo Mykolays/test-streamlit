@@ -1,4 +1,3 @@
-import os
 import numpy as np
 import streamlit as st
 import pandas as pd
@@ -8,9 +7,7 @@ from scipy.signal import butter, filtfilt
 
 st.title("Solar Flare Analysis")
 
-data_directory = os.path.abspath("./data")
-filenames = os.listdir(data_directory)
-filenames_no_extension = [os.path.splitext(filename)[0] for filename in filenames]
+filenames_no_extension = ['cycle_21-25', 'cycle_21', 'cycle_22', 'cycle_23', 'cycle_24']
 
 
 # st.sidebar.header("Cycle Choice")

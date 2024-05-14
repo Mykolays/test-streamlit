@@ -7,7 +7,7 @@ from scipy.signal import butter, filtfilt
 
 st.title("Solar Flare Analysis")
 
-filenames_no_extension = ['cycle_21-25', 'cycle_21', 'cycle_22', 'cycle_23', 'cycle_24']
+filenames_no_extension = ['cycle_21', 'cycle_22', 'cycle_23', 'cycle_24','cycle_25','cycle_21-25']
 
 
 # st.sidebar.header("Cycle Choice")
@@ -68,17 +68,43 @@ for photo_filename in photo_filenames:
 
 st.subheader("FFT Analysis for Selected Cycle")
 
+# # Perform FFT for 'T-day' column
+# t_day_fft = np.fft.fft(df['T-day'])
+# frequencies = np.fft.fftfreq(len(t_day_fft))
+
+# # Plot FFT
+# plt.figure(figsize=(12, 6))
+# plt.plot(frequencies[:len(frequencies)//2], np.abs(t_day_fft)[:len(frequencies)//2])
+# plt.xlabel('Frequency')
+# plt.ylabel('Amplitude')
+# plt.title(f"FFT of Total index of {selected_file} daily")
+# st.pyplot(plt)
+
 # Perform FFT for 'T-day' column
 t_day_fft = np.fft.fft(df['T-day'])
-frequencies = np.fft.fftfreq(len(t_day_fft))
+frequencies = np.fft.fftfreq(len(t_day_fft), d=1.0)  # Assuming a sample rate of 1/day
 
-# Plot FFT
-plt.figure(figsize=(12, 6))
-plt.plot(frequencies[:len(frequencies)//2], np.abs(t_day_fft)[:len(frequencies)//2])
-plt.xlabel('Frequency')
-plt.ylabel('Amplitude')
-plt.title(f"FFT of Total index of {selected_file} daily")
-st.pyplot(plt)
+# Create a DataFrame for plotting
+fft_df = pd.DataFrame({
+    'Frequency': frequencies[:len(frequencies)//2],
+    'Amplitude': np.abs(t_day_fft)[:len(frequencies)//2]
+})
+
+# Plot FFT with Plotly Express
+fig = px.line(
+    fft_df, 
+    x='Frequency', 
+    y='Amplitude', 
+    title=f"FFT of Total index of {selected_file} daily"
+)
+
+fig.update_layout(
+    xaxis_title='Frequency',
+    yaxis_title='Amplitude',
+    template='plotly_white'
+)
+
+st.plotly_chart(fig)
 
 # st.subheader("Bandpass Filtered FFT for Selected Cycle")
 # # Define bandpass filter
